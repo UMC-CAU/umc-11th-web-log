@@ -1,12 +1,11 @@
 import "./movie-pages.css";
 import { MovieReview } from "../../components/movies/movie-review";
 import { Link, useParams } from "@tanstack/react-router";
-import { useMovies } from "../../utils/movie-context";
-import { cn } from "../../utils/cn";
+import { movies } from "../../data/movies";
+import { BookmarkButton } from "../../components/movies/bookmark-button";
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
-  const { movies, onToggleBookmark } = useMovies();
   const movie = movies.find((item) => item.id === Number(movieId));
   if (!movie) return <main className="mx-auto w-full max-w-[1328px] flex-1 px-6 py-20"><h1 className="text-2xl font-bold">영화를 찾을 수 없어요.</h1><Link to="/" className="mt-6 inline-block text-blue-600">영화 목록으로</Link></main>;
   return <main className="movie-detail-page">
@@ -27,10 +26,7 @@ export function MovieDetailPage() {
       <div className="movie-detail-description">
         <h2 className="movie-detail-tagline">{movie.tagline}</h2>
         <p className="movie-detail-overview">{movie.overview}</p>
-        <button type="button" aria-pressed={movie.isBookmarked} onClick={() => onToggleBookmark(movie.id)} className={cn("movie-detail-bookmark", movie.isBookmarked ? "movie-detail-bookmark--active" : "")}>
-          <img src="/icons/bookmark-outline.svg" alt="" className={cn("size-4", "invert")} />
-          {movie.isBookmarked ? "북마크 해제" : "북마크 추가"}
-        </button>
+        <BookmarkButton movieId={movie.id} movieTitle={movie.title} />
       </div>
       <MovieReview key={movie.id} movieId={movie.id} />
     </section>
