@@ -28,7 +28,8 @@
 .movie-search-summary p { color: #71717a; font-size: 12px; }
 .movie-search-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; list-style: none; padding: 0; }
 .movie-search-result { display: flex; min-width: 0; align-items: flex-start; gap: 20px; border-bottom: 1px solid #e4e4e780; padding-bottom: 28px; }
-.movie-search-poster-link { width: 128px; flex-shrink: 0; }
+.movie-search-poster-card { position: relative; width: 128px; flex-shrink: 0; overflow: hidden; border-radius: 8px; background: #e4e4e7; }
+.movie-search-poster-link { display: block; }
 .movie-search-poster { display: block; width: 100%; aspect-ratio: 2 / 3; border-radius: 8px; object-fit: cover; }
 .movie-search-result-body { min-width: 0; padding-top: 4px; }
 .movie-search-result-title { font-size: 16px; font-weight: 700; line-height: 1.4; }
@@ -76,7 +77,7 @@
   .movie-search-title { font-size: 28px; }
   .movie-search-form { gap: 8px; padding: 8px; }
   .movie-search-submit { padding: 9px 14px; }
-  .movie-search-poster-link { width: 96px; }
+  .movie-search-poster-card { width: 96px; }
   .movie-search-result { gap: 16px; }
   .movie-detail-hero-content { min-height: 320px; padding: 24px 20px; }
   .movie-detail-title { font-size: 30px; }
