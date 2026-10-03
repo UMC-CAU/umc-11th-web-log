@@ -3,7 +3,6 @@ import { useState, type SubmitEvent } from "react";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { movies } from "../../data/movies";
 import { cn } from "../../utils/cn";
-import { BookmarkButton } from "../../components/movies/bookmark-button";
 
 function SearchForm({ query, centered }: { query: string; centered: boolean }) {
   const [text, setText] = useState(query);
@@ -39,10 +38,7 @@ export function SearchPage() {
         </div>
         {results.length === 0 ? <div className="movie-search-empty-result"><p className="font-semibold text-zinc-700">검색 결과가 없어요.</p><p className="mt-3 text-sm text-zinc-400">다른 영화 제목이나 원제로 검색해 보세요.</p></div> :
           <ul className="movie-search-results">{results.map((movie) => <li key={movie.id} className="movie-search-result">
-            <div className="movie-search-poster-card">
-              <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} aria-label={`${movie.title} 상세 보기`} className="movie-search-poster-link"><img className="movie-search-poster" src={movie.posterPath} alt={`${movie.title} 포스터`} /></Link>
-              <BookmarkButton movieId={movie.id} movieTitle={movie.title} variant="card" />
-            </div>
+            <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} aria-label={`${movie.title} 상세 보기`} className="movie-search-poster-link"><img className="movie-search-poster" src={movie.posterPath} alt={`${movie.title} 포스터`} /></Link>
             <div className="movie-search-result-body">
               <h3 className="movie-search-result-title"><Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} className="hover:text-blue-600">{movie.title}</Link></h3>
               <p className="movie-search-original-title">{movie.originalTitle}</p>
