@@ -41,7 +41,7 @@ export function SearchPage() {
           <ul className="movie-search-results">{results.map((movie) => <li key={movie.id} className="movie-search-result">
             <div className="movie-search-poster-card">
               <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} aria-label={`${movie.title} 상세 보기`} className="movie-search-poster-link"><img className="movie-search-poster" src={movie.posterPath} alt={`${movie.title} 포스터`} /></Link>
-              <BookmarkButton movieId={movie.id} movieTitle={movie.title} variant="card" />
+              <BookmarkButton movieId={movie.id} />
             </div>
             <div className="movie-search-result-body">
               <h3 className="movie-search-result-title"><Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} className="hover:text-blue-600">{movie.title}</Link></h3>
