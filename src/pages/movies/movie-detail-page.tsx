@@ -26,7 +26,7 @@ export function MovieDetailPage() {
       <div className="movie-detail-description">
         <h2 className="movie-detail-tagline">{movie.tagline}</h2>
         <p className="movie-detail-overview">{movie.overview}</p>
-        <BookmarkButton movieId={movie.id} movieTitle={movie.title} />
+        <BookmarkButton movieId={movie.id} variant="detail" />
       </div>
       <MovieReview key={movie.id} movieId={movie.id} />
     </section>

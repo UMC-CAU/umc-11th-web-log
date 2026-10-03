@@ -1,0 +1,61 @@
+.bookmark-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.bookmark-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.bookmark-button__icon {
+  display: block;
+  flex-shrink: 0;
+  filter: invert(1);
+}
+
+/* 포스터를 감싼 position: relative 요소를 기준으로 배치해요. */
+.bookmark-button--card {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 6px;
+  border: 1px solid rgb(255 255 255 / 60%);
+  background: rgb(0 0 0 / 60%);
+}
+
+.bookmark-button--card .bookmark-button__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.bookmark-button--card:hover { background: rgb(0 0 0 / 80%); }
+.bookmark-button--card.bookmark-button--active { background: #2563eb; }
+.bookmark-button--card.bookmark-button--active:hover { background: #1d4ed8; }
+
+.bookmark-button--detail {
+  margin-top: 24px;
+  padding: 11px 18px;
+  border: 0;
+  background: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bookmark-button--detail .bookmark-button__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.bookmark-button--detail:hover { background: #1d4ed8; }
+.bookmark-button--detail.bookmark-button--active { background: #1e40af; }

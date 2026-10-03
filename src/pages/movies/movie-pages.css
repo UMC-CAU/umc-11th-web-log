@@ -57,10 +57,6 @@
 .movie-detail-description { min-width: 0; }
 .movie-detail-tagline { font-size: 20px; font-weight: 700; line-height: 1.5; }
 .movie-detail-overview { margin-top: 16px; color: #71717a; font-size: 14px; line-height: 1.9; }
-.movie-detail-bookmark { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; border: 0; border-radius: 6px; padding: 11px 18px; color: white; background: #2563eb; font-size: 14px; font-weight: 600; cursor: pointer; }
-.movie-detail-bookmark:hover { background: #1d4ed8; }
-.movie-detail-bookmark--active { background: #1e40af; }
-.movie-detail-bookmark img { width: 16px; height: 16px; filter: invert(1); }
 .movie-review { min-width: 0; padding-left: 28px; border-left: 1px solid #e4e4e7; }
 .movie-review h2 { font-size: 20px; font-weight: 700; }
 .movie-review textarea { min-height: 100px; }
