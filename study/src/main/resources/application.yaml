@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: study
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/umc_week2
+    username: root
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver

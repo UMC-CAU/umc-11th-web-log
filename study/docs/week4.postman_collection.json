@@ -1,0 +1,136 @@
+{
+  "item": [
+    {
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/books"
+      },
+      "name": "GET 도서 목록 (200)",
+      "event": [
+        {
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(200); });"
+            ]
+          },
+          "listen": "test"
+        }
+      ]
+    },
+    {
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\"categoryId\": {{categoryId}}, \"title\": \"ORM 실습 도서\", \"description\": \"4주차 필수 미션\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "method": "POST",
+        "header": [
+          {
+            "value": "application/json",
+            "key": "Content-Type"
+          }
+        ],
+        "url": "{{baseUrl}}/books"
+      },
+      "name": "POST 도서 등록 (201)",
+      "event": [
+        {
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(201); });"
+            ]
+          },
+          "listen": "test"
+        }
+      ]
+    },
+    {
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\"categoryId\": {{categoryId}}, \"title\": \"   \"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "method": "POST",
+        "header": [
+          {
+            "value": "application/json",
+            "key": "Content-Type"
+          }
+        ],
+        "url": "{{baseUrl}}/books"
+      },
+      "name": "POST 빈 제목 (400)",
+      "event": [
+        {
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(400); });"
+            ]
+          },
+          "listen": "test"
+        }
+      ]
+    },
+    {
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\"categoryId\": -1, \"title\": \"오류 확인\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "method": "POST",
+        "header": [
+          {
+            "value": "application/json",
+            "key": "Content-Type"
+          }
+        ],
+        "url": "{{baseUrl}}/books"
+      },
+      "name": "POST 없는 카테고리 (404)",
+      "event": [
+        {
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(404); });"
+            ]
+          },
+          "listen": "test"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "value": "http://localhost:8080",
+      "key": "baseUrl"
+    },
+    {
+      "value": "1",
+      "key": "categoryId"
+    }
+  ],
+  "info": {
+    "name": "UMC 4주차 필수 미션",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  }
+}
