@@ -44,3 +44,12 @@ CSS 가져오기 타입 인식을 위해 src/vite-env.d.ts에 Vite 타입 참조
 5. `pnpm build`를 실행합니다.
 
 참고: [Zustand persist 공식 문서](https://zustand.docs.pmnd.rs/reference/middlewares/persist)
+
+## 5주차: TMDB API 연동
+
+1. TMDB 계정의 API 설정에서 API Read Access Token을 발급받습니다.
+2. 프로젝트 루트에 `.env.local`을 만들고 `.env.example`을 참고하여 값을 입력합니다. `.env.local`은 Git에 올리지 않습니다. Vite 환경 변수는 브라우저에서 볼 수 있으므로 토큰을 비밀값으로 보호하는 용도로 사용하면 안 됩니다.
+3. `pnpm install` 후 `pnpm dev`를 실행합니다. 환경 변수를 바꾸면 개발 서버를 재시작합니다.
+4. 브라우저 개발자 도구 Network 탭에서 목록, 검색, 상세의 요청과 응답을 확인합니다. 순수 fetch 연습은 `.env.local`에 `VITE_TMDB_USE_FETCH=true`를 추가하고 서버를 재시작하면 목록에 적용됩니다. 확인 후 이 줄을 삭제하면 ky 요청으로 돌아갑니다.
+
+`src/api/tmdb.ts`에 fetch 예제와 공통 ky 요청, `src/utils/movie-adapter.ts`에 응답 변환, `src/hooks/use-request.ts`에 로딩/오류/재시도 처리가 있습니다. 목록 페이지 번호는 URL의 `page` 값과 TMDB 요청에 연결됩니다.

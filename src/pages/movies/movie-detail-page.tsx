@@ -1,13 +1,19 @@
 import "./movie-pages.css";
 import { MovieReview } from "../../components/movies/movie-review";
 import { Link, useParams } from "@tanstack/react-router";
-import { movies } from "../../data/movies";
+import { useCallback } from "react";
+import { getMovieDetail } from "../../api/tmdb";
+import { useRequest } from "../../hooks/use-request";
+import { toMovie } from "../../utils/movie-adapter";
+import { RequestState } from "../../components/movies/request-state";
 import { BookmarkButton } from "../../components/movies/bookmark-button";
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
-  const movie = movies.find((item) => item.id === Number(movieId));
-  if (!movie) return <main className="mx-auto w-full max-w-[1328px] flex-1 px-6 py-20"><h1 className="text-2xl font-bold">영화를 찾을 수 없어요.</h1><Link to="/" className="mt-6 inline-block text-blue-600">영화 목록으로</Link></main>;
+  const request = useCallback((signal: AbortSignal) => getMovieDetail(movieId, signal), [movieId]);
+  const { state, retry } = useRequest(`detail:${movieId}`, request);
+  if (state.status !== "success") return <main className="mx-auto w-full max-w-[1328px] flex-1 px-6 py-8"><RequestState error={state.status === "error" ? state.error : undefined} retry={retry} /><Link to="/" className="text-blue-600">영화 목록으로</Link></main>;
+  const movie = toMovie(state.data);
   return <main className="movie-detail-page">
     <section className="movie-detail-hero">
       <img src={movie.backdropPath} alt="" aria-hidden="true" className="movie-detail-backdrop" />

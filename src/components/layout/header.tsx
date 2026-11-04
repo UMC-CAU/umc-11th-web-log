@@ -8,6 +8,7 @@ export function Header() {
       <nav aria-label="메인 메뉴" className="flex gap-5 text-sm">
         <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={cn("py-2 hover:text-blue-600", pathname === "/" || pathname.startsWith("/movies/") ? "font-bold text-zinc-900 underline underline-offset-4" : "text-zinc-500")}>영화</Link>
         <Link to="/search" search={{}} aria-current={pathname === "/search" ? "page" : undefined} className={cn("py-2 hover:text-blue-600", pathname === "/search" ? "font-bold text-zinc-900 underline underline-offset-4" : "text-zinc-500")}>검색</Link>
+        <Link to="/account" aria-current={pathname === "/account" ? "page" : undefined} className={cn("py-2 hover:text-blue-600", pathname === "/account" ? "font-bold text-zinc-900 underline underline-offset-4" : "text-zinc-500")}>회원 정보</Link>
       </nav>
       <Link to="/search" search={{}} aria-label="영화 검색 열기" className="ml-auto rounded-md border border-zinc-200 p-2 hover:bg-zinc-100"><img src="/icons/search.svg" alt="" className="size-5" /></Link>
     </div>
