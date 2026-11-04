@@ -1,0 +1,14 @@
+﻿[
+    {
+        "suite":  "com.umc.study.Week5ApiTests",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0
+    },
+    {
+        "suite":  "com.umc.study.Week6ApiTests",
+        "tests":  17,
+        "failures":  0,
+        "errors":  0
+    }
+]

@@ -1,0 +1,207 @@
+<!doctype html><html lang="ko">
+<meta charset="utf-8"><title>6주차 API 실제 HTTP 검증 기록</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;margin:36px auto;padding:0 24px;max-width:1180px;background:#f3f5f8;color:#172033}
+article{background:white;border:1px solid #dae0ea;border-radius:12px;margin:24px 0;padding:24px;break-inside:avoid}
+h1{font-size:28px}h2{font-size:20px;margin:0 0 12px}b{float:right;color:#146349}h3{font-size:14px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:20px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6fa;padding:18px;border-radius:8px;font:14px/1.6 Consolas,monospace}
+p{overflow-wrap:anywhere} @media(max-width:700px){.columns{grid-template-columns:1fr}b{float:none}}</style>
+<h1>6주차 API 실제 HTTP 검증 기록</h1>
+<p>Spring Boot demo 프로필 · H2 임시 DB · 2026-11-04T06:15:56.740Z</p>
+<p>실행 중인 서버에 전송한 실제 HTTP 요청·응답입니다. Postman 캡처나 MySQL 실행 결과가 아닙니다.
+비밀번호는 실습용 더미 값이며 회원가입 응답에는 포함되지 않습니다.</p><article id="case-1">
+  <h2>1. 회원가입 성공 <b>HTTP 201</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "email": "week6-1793772956124@example.com",
+  "password": "Umc!1234",
+  "nickname": "회원72956124"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": true,
+  "code": "COMMON201",
+  "message": "회원가입에 성공했습니다.",
+  "result": {
+    "memberId": 3,
+    "email": "week6-1793772956124@example.com",
+    "nickname": "회원72956124"
+  }
+}</pre></section></div>
+  </article>
+<article id="case-2">
+  <h2>2. 이메일 형식 검증 실패 <b>HTTP 400</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "email": "not-an-email",
+  "password": "Umc!1234",
+  "nickname": "검증실패"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "COMMON4001",
+  "message": "email: 올바른 이메일 형식이 아닙니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-3">
+  <h2>3. 이메일 중복 <b>HTTP 409</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "email": "week6-1793772956124@example.com",
+  "password": "Umc!1234",
+  "nickname": "중복검사"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "MEMBER4091",
+  "message": "이미 사용 중인 이메일입니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-4">
+  <h2>4. 닉네임 중복 <b>HTTP 409</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "email": "other-1793772956124@example.com",
+  "password": "Umc!1234",
+  "nickname": "회원72956124"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "MEMBER4092",
+  "message": "이미 사용 중인 닉네임입니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-5">
+  <h2>5. 평점 등록 성공 <b>HTTP 201</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members/3/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "movieId": 550,
+  "score": 5,
+  "comment": "등록한 후기"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": true,
+  "code": "COMMON201",
+  "message": "평점 등록에 성공했습니다.",
+  "result": 4
+}</pre></section></div>
+  </article>
+<article id="case-6">
+  <h2>6. 평점 중복 <b>HTTP 409</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members/3/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "movieId": 550,
+  "score": 4
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "RATING4091",
+  "message": "이미 이 영화에 평점을 남기셨습니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-7">
+  <h2>7. 별점 범위 검증 실패 <b>HTTP 400</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members/3/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "movieId": 155,
+  "score": 6
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "COMMON4001",
+  "message": "score: 별점은 5점 이하여야 합니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-8">
+  <h2>8. 다른 회원의 평점 수정 차단 <b>HTTP 403</b></h2>
+  <p><strong>PATCH</strong> http://127.0.0.1:18086/members/1/ratings/4</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "score": 1
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "RATING4031",
+  "message": "본인이 작성한 평점만 수정하거나 삭제할 수 있습니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-9">
+  <h2>9. 다른 회원의 평점 삭제 차단 <b>HTTP 403</b></h2>
+  <p><strong>DELETE</strong> http://127.0.0.1:18086/members/1/ratings/4</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>(본문 없음)</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "RATING4031",
+  "message": "본인이 작성한 평점만 수정하거나 삭제할 수 있습니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-10">
+  <h2>10. 평점 수정 성공 <b>HTTP 200</b></h2>
+  <p><strong>PATCH</strong> http://127.0.0.1:18086/members/3/ratings/4</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "score": 3,
+  "comment": "수정한 후기"
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": true,
+  "code": "COMMON200",
+  "message": "평점 수정에 성공했습니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-11">
+  <h2>11. 수정 후 조회 <b>HTTP 200</b></h2>
+  <p><strong>GET</strong> http://127.0.0.1:18086/members/3/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>(본문 없음)</pre></section>
+  <section><h3>실제 응답</h3><pre>[
+  {
+    "ratingId": 4,
+    "movieId": 550,
+    "score": 3,
+    "comment": "수정한 후기",
+    "createdAt": "2026-11-04T15:15:56.64725",
+    "updatedAt": "2026-11-04T15:15:56.676835"
+  }
+]</pre></section></div>
+  </article>
+<article id="case-12">
+  <h2>12. 평점 삭제 성공 — 응답 본문 없음 <b>HTTP 204</b></h2>
+  <p><strong>DELETE</strong> http://127.0.0.1:18086/members/3/ratings/4</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>(본문 없음)</pre></section>
+  <section><h3>실제 응답</h3><pre>(본문 없음)</pre></section></div>
+  </article>
+<article id="case-13">
+  <h2>13. 삭제 후 빈 목록 확인 <b>HTTP 200</b></h2>
+  <p><strong>GET</strong> http://127.0.0.1:18086/members/3/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>(본문 없음)</pre></section>
+  <section><h3>실제 응답</h3><pre>[]</pre></section></div>
+  </article>
+<article id="case-14">
+  <h2>14. 없는 평점 삭제 <b>HTTP 404</b></h2>
+  <p><strong>DELETE</strong> http://127.0.0.1:18086/members/3/ratings/4</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>(본문 없음)</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "RATING4041",
+  "message": "존재하지 않는 평점입니다.",
+  "result": null
+}</pre></section></div>
+  </article>
+<article id="case-15">
+  <h2>15. 없는 회원의 평점 등록 <b>HTTP 404</b></h2>
+  <p><strong>POST</strong> http://127.0.0.1:18086/members/999999999/ratings</p>
+  <div class="columns"><section><h3>요청 본문</h3><pre>{
+  "movieId": 550,
+  "score": 3
+}</pre></section>
+  <section><h3>실제 응답</h3><pre>{
+  "isSuccess": false,
+  "code": "MEMBER4041",
+  "message": "존재하지 않는 회원입니다.",
+  "result": null
+}</pre></section></div>
+  </article></html>

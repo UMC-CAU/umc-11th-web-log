@@ -25,6 +25,20 @@ public class Rating {
     private String comment;
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
-    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false, insertable = false)
     private LocalDateTime updatedAt;
+
+    public Rating(Member member, Long movieId, Integer score, String comment) {
+        this.member = member;
+        this.movieId = movieId;
+        this.score = score.byteValue();
+        this.comment = comment;
+    }
+
+    public void update(Integer score, String comment) {
+        this.score = score.byteValue();
+        this.comment = comment;
+        // MySQL ON UPDATE와 임시 H2 DB에서 동일하게 수정 시각을 갱신합니다.
+        this.updatedAt = LocalDateTime.now();
+    }
 }
