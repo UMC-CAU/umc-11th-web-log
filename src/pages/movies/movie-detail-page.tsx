@@ -1,20 +1,20 @@
 import "./movie-pages.css";
 import { MovieReview } from "../../components/movies/movie-review";
 import { Link, useParams } from "@tanstack/react-router";
-import { useCallback } from "react";
-import { getMovieDetail } from "../../api/tmdb";
-import { useRequest } from "../../hooks/use-request";
+import { useQuery } from "@tanstack/react-query";
+import { movieQueries } from "../../queries/movie-queries";
 import { toMovie } from "../../utils/movie-adapter";
 import { RequestState } from "../../components/movies/request-state";
 import { BookmarkButton } from "../../components/movies/bookmark-button";
 
 export function MovieDetailPage() {
   const { movieId } = useParams({ from: "/movies/$movieId" });
-  const request = useCallback((signal: AbortSignal) => getMovieDetail(movieId, signal), [movieId]);
-  const { state, retry } = useRequest(`detail:${movieId}`, request);
-  if (state.status !== "success") return <main className="mx-auto w-full max-w-[1328px] flex-1 px-6 py-8"><RequestState error={state.status === "error" ? state.error : undefined} retry={retry} /><Link to="/" className="text-blue-600">영화 목록으로</Link></main>;
-  const movie = toMovie(state.data);
+  const { data, error, isPending, isFetching, refetch } = useQuery(movieQueries.detail(movieId));
+  if (isPending || !data) return <main className="mx-auto w-full max-w-[1328px] flex-1 px-6 py-8"><RequestState error={error?.message} retry={() => void refetch()} /><Link to="/" className="text-blue-600">영화 목록으로</Link></main>;
+  const movie = toMovie(data);
   return <main className="movie-detail-page">
+    {isFetching && <p role="status" className="p-4 text-sm text-zinc-500">최신 영화 정보를 확인하는 중이에요...</p>}
+    {error && <RequestState error={error.message} retry={() => void refetch()} />}
     <section className="movie-detail-hero">
       <img src={movie.backdropPath} alt="" aria-hidden="true" className="movie-detail-backdrop" />
       <div className="movie-detail-shade" />

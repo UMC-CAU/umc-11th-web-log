@@ -1,8 +1,8 @@
 import "./movie-pages.css";
-import { useCallback, useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { searchMovies } from "../../api/tmdb";
-import { useRequest } from "../../hooks/use-request";
+import { movieQueries, normalizeMovieSearch } from "../../queries/movie-queries";
 import { toMovie } from "../../utils/movie-adapter";
 import { RequestState } from "../../components/movies/request-state";
 import { cn } from "../../utils/cn";
@@ -29,10 +29,9 @@ function SearchForm({ query, centered }: { query: string; centered: boolean }) {
 }
 export function SearchPage() {
   const { query } = useSearch({ from: "/search" });
-  const normalized = query?.trim().toLowerCase() ?? "";
-  const request = useCallback((signal: AbortSignal) => normalized ? searchMovies(normalized, 1, signal) : Promise.resolve({ page: 1, results: [], total_pages: 0, total_results: 0 }), [normalized]);
-  const { state, retry } = useRequest(`search:${normalized}`, request);
-  const results = state.status === "success" ? state.data.results.map(toMovie) : [];
+  const normalized = normalizeMovieSearch(query ?? "");
+  const { data, error, isPending, isFetching, refetch } = useQuery(movieQueries.search(normalized));
+  const results = data?.results.map(toMovie) ?? [];
   return (
     <main className={cn("movie-search-page", normalized ? "" : "movie-search-page--empty")}>
       <h1 className={cn("movie-search-title", normalized ? "" : "")}>{normalized ? "영화 검색" : "어떤 영화를 찾고 있나요?"}</h1>
@@ -40,9 +39,11 @@ export function SearchPage() {
       {!normalized ? <p className="movie-search-hint">검색어를 입력해 주세요.</p> : <>
         <div className="movie-search-summary">
           <h2 className="text-sm font-semibold">‘{query}’ 검색 결과</h2>
-          <p className="text-xs text-zinc-500">{state.status === "success" ? `영화 ${state.data.total_results}편` : ""}</p>
+          <p className="text-xs text-zinc-500">{data ? `영화 ${data.total_results}편` : ""}</p>
         </div>
-        {state.status !== "success" ? <RequestState error={state.status === "error" ? state.error : undefined} retry={retry} /> : results.length === 0 ? <div className="movie-search-empty-result"><p className="font-semibold text-zinc-700">검색 결과가 없어요.</p><p className="mt-3 text-sm text-zinc-400">다른 영화 제목이나 원제로 검색해 보세요.</p></div> :
+        {isFetching && !isPending && <p role="status" className="mb-4 text-sm text-zinc-500">최신 검색 결과를 확인하는 중이에요...</p>}
+        {error && data && <RequestState error={error.message} retry={() => void refetch()} />}
+        {isPending ? <RequestState /> : !data ? <RequestState error={error?.message} retry={() => void refetch()} /> : results.length === 0 ? <div className="movie-search-empty-result"><p className="font-semibold text-zinc-700">검색 결과가 없어요.</p><p className="mt-3 text-sm text-zinc-400">다른 영화 제목이나 원제로 검색해 보세요.</p></div> :
           <ul className="movie-search-results">{results.map((movie) => <li key={movie.id} className="movie-search-result">
             <div className="movie-search-poster-card">
               <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }} aria-label={`${movie.title} 상세 보기`} className="movie-search-poster-link"><img className="movie-search-poster" src={movie.posterPath} alt={`${movie.title} 포스터`} /></Link>

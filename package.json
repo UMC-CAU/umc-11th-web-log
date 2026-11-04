@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test": "node scripts/check-query-cache.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -11,6 +12,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-query": "^5.105.3",
+    "@tanstack/react-query-devtools": "^5.105.3",
     "@tanstack/react-router": "^1.170.40",
     "clsx": "^2.1.1",
     "ky": "^2.2.0",

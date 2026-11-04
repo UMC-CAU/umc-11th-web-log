@@ -52,4 +52,23 @@ CSS 가져오기 타입 인식을 위해 src/vite-env.d.ts에 Vite 타입 참조
 3. `pnpm install` 후 `pnpm dev`를 실행합니다. 환경 변수를 바꾸면 개발 서버를 재시작합니다.
 4. 브라우저 개발자 도구 Network 탭에서 목록, 검색, 상세의 요청과 응답을 확인합니다. 순수 fetch 연습은 `.env.local`에 `VITE_TMDB_USE_FETCH=true`를 추가하고 서버를 재시작하면 목록에 적용됩니다. 확인 후 이 줄을 삭제하면 ky 요청으로 돌아갑니다.
 
-`src/api/tmdb.ts`에 fetch 예제와 공통 ky 요청, `src/utils/movie-adapter.ts`에 응답 변환, `src/hooks/use-request.ts`에 로딩/오류/재시도 처리가 있습니다. 목록 페이지 번호는 URL의 `page` 값과 TMDB 요청에 연결됩니다.
+`src/api/tmdb.ts`에 fetch 예제와 공통 ky 요청, `src/utils/movie-adapter.ts`에 응답 변환이 있습니다. 6주차에는 기존 `useRequest` 훅을 제거하고 TanStack Query로 로딩/오류/재시도와 서버 데이터 캐시를 관리하도록 전환했습니다. 목록 페이지 번호는 URL의 `page` 값과 TMDB 요청에 연결됩니다.
+
+## 6주차: TanStack Query
+
+목록·검색·상세 요청을 모두 `useQuery`로 전환했습니다. 핵심 키워드 네 문항의 답변과 미션 구현 기록은 [6주차 워크북](docs/week-06.md)에 정리했습니다.
+
+- `src/main.tsx`: 앱 전체에 `QueryClientProvider` 적용, 개발 모드에서 React Query Devtools 표시.
+- `src/lib/query-client.ts`: 한 개의 QueryClient를 공유하고 `staleTime` 5분, `gcTime` 30분, 자동 재시도 비활성화 설정.
+- `src/queries/movie-queries.ts`: 목록·검색·상세의 query key와 query function을 `queryOptions`로 분리.
+- 각 영화 화면: 최초 로딩, 오류와 수동 재시도, 빈 목록·검색 결과, 성공 결과 표시. 백그라운드 재조회 중에는 기존 결과를 유지하고 갱신 상태를 표시.
+- 검색어가 비어 있으면 `enabled: false`로 요청을 막고 입력 안내를 표시.
+
+```sh
+corepack pnpm test
+corepack pnpm lint
+corepack pnpm build
+corepack pnpm dev
+```
+
+`pnpm`이 설치되어 있다면 `corepack`을 생략해도 됩니다. 자동 검증은 실제 TMDB 대신 가짜 응답을 사용하여 캐시 재사용·화면 재구독·요청 구분·빈 검색어 차단·실패 후 재시도를 확인합니다. 실제 브라우저의 Query Devtools 및 Network 패널 확인 절차와 검증 범위는 워크북에 적었습니다.
