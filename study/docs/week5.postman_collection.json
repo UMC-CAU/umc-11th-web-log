@@ -1,0 +1,122 @@
+{
+  "info": {
+    "name": "UMC 5주차 회원 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "닉네임 중복 확인 (수현)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/nickname/수현",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "nickname",
+            "수현"
+          ]
+        }
+      }
+    },
+    {
+      "name": "닉네임 사용 가능",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/nickname/newuser",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "nickname",
+            "newuser"
+          ]
+        }
+      }
+    },
+    {
+      "name": "이메일 중복 확인",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/email/noco@umc.com",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "email",
+            "noco@umc.com"
+          ]
+        }
+      }
+    },
+    {
+      "name": "이메일 사용 가능",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/email/new@example.com",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "email",
+            "new@example.com"
+          ]
+        }
+      }
+    },
+    {
+      "name": "평점 목록 최신순",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/1/ratings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "1",
+            "ratings"
+          ]
+        }
+      }
+    },
+    {
+      "name": "없는 회원 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/members/999/ratings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "members",
+            "999",
+            "ratings"
+          ]
+        }
+      }
+    }
+  ]
+}

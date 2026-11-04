@@ -1,0 +1,2 @@
+INSERT INTO member (email, password, nickname) VALUES ('noco@umc.com', 'dummy-not-a-real-password', '수현'), ('minseo@umc.com', 'dummy-not-a-real-password', '민서');
+INSERT INTO rating (member_id, movie_id, score, comment, created_at, updated_at) VALUES (1, 550, 5, '최고의 영화!', '2026-01-01 12:00:00', '2026-01-01 12:00:00'), (1, 155, 4, '다시 봐도 명작', '2026-01-02 12:00:00', '2026-01-02 12:00:00'), (2, 550, 3, '호불호가 갈릴 것 같아요', '2026-01-03 12:00:00', '2026-01-03 12:00:00');
