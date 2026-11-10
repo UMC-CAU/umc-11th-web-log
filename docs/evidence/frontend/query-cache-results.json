@@ -1,0 +1,586 @@
+{
+  "capturedAt": "2026-11-04T07:34:27.229Z",
+  "environment": "자동 검증 / mock HTTP / 실제 프로젝트의 queryOptions·API 함수 사용",
+  "staleTime": 300000,
+  "gcTime": 1800000,
+  "result": "PASS",
+  "evidence": [
+    {
+      "label": "같은 목록을 동시에 요청: HTTP 요청 1회",
+      "requestCount": 1,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        }
+      ]
+    },
+    {
+      "label": "목록 재조회·재구독: HTTP 요청이 1회로 유지됨",
+      "requestCount": 1,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        }
+      ]
+    },
+    {
+      "label": "페이지·상세 ID별 캐시 분리, 같은 상세 재조회 시 요청 없음",
+      "requestCount": 4,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/popular?language=ko-KR&page=2",
+        "/3/movie/1?language=ko-KR",
+        "/3/movie/2?language=ko-KR"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            2
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 2,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "1"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 1,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "2"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 2,
+            "title": "테스트 영화"
+          }
+        }
+      ]
+    },
+    {
+      "label": "검색 정규화·빈 결과 보관·빈 검색어 요청 차단",
+      "requestCount": 5,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/popular?language=ko-KR&page=2",
+        "/3/movie/1?language=ko-KR",
+        "/3/movie/2?language=ko-KR",
+        "/3/search/movie?language=ko-KR&query=batman&page=1&include_adult=false"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            2
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 2,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "1"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 1,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "2"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 2,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "batman",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [],
+            "total_pages": 0,
+            "total_results": 0
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "",
+            1
+          ],
+          "status": "pending",
+          "fetchStatus": "idle",
+          "data": null
+        }
+      ]
+    },
+    {
+      "label": "목록 캐시 무효화 후 새 요청 실행",
+      "requestCount": 6,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/popular?language=ko-KR&page=2",
+        "/3/movie/1?language=ko-KR",
+        "/3/movie/2?language=ko-KR",
+        "/3/search/movie?language=ko-KR&query=batman&page=1&include_adult=false",
+        "/3/movie/popular?language=ko-KR&page=1"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            2
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 2,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "1"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 1,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "2"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 2,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "batman",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [],
+            "total_pages": 0,
+            "total_results": 0
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "",
+            1
+          ],
+          "status": "pending",
+          "fetchStatus": "idle",
+          "data": null
+        }
+      ]
+    },
+    {
+      "label": "503 응답 시 error 상태",
+      "requestCount": 7,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/popular?language=ko-KR&page=2",
+        "/3/movie/1?language=ko-KR",
+        "/3/movie/2?language=ko-KR",
+        "/3/search/movie?language=ko-KR&query=batman&page=1&include_adult=false",
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/503?language=ko-KR"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            2
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 2,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "1"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 1,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "2"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 2,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "batman",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [],
+            "total_pages": 0,
+            "total_results": 0
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "",
+            1
+          ],
+          "status": "pending",
+          "fetchStatus": "idle",
+          "data": null
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "503"
+          ],
+          "status": "error",
+          "fetchStatus": "idle",
+          "data": null
+        }
+      ]
+    },
+    {
+      "label": "실패한 상세 요청을 다시 실행하여 success 상태로 복구",
+      "requestCount": 8,
+      "requests": [
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/popular?language=ko-KR&page=2",
+        "/3/movie/1?language=ko-KR",
+        "/3/movie/2?language=ko-KR",
+        "/3/search/movie?language=ko-KR&query=batman&page=1&include_adult=false",
+        "/3/movie/popular?language=ko-KR&page=1",
+        "/3/movie/503?language=ko-KR",
+        "/3/movie/503?language=ko-KR"
+      ],
+      "queries": [
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "popular",
+            2
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 2,
+            "results": [
+              {
+                "id": 1
+              }
+            ],
+            "total_pages": 2,
+            "total_results": 2
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "1"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 1,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "2"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 2,
+            "title": "테스트 영화"
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "batman",
+            1
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "page": 1,
+            "results": [],
+            "total_pages": 0,
+            "total_results": 0
+          }
+        },
+        {
+          "queryKey": [
+            "movies",
+            "search",
+            "",
+            1
+          ],
+          "status": "pending",
+          "fetchStatus": "idle",
+          "data": null
+        },
+        {
+          "queryKey": [
+            "movies",
+            "detail",
+            "503"
+          ],
+          "status": "success",
+          "fetchStatus": "idle",
+          "data": {
+            "id": 503,
+            "title": "테스트 영화"
+          }
+        }
+      ]
+    }
+  ]
+}
