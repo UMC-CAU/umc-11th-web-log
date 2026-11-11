@@ -1,8 +1,11 @@
 package com.umc.study;
 
 import com.umc.study.repository.MemberRepository;
+import com.umc.study.util.JwtUtil;
+import org.springframework.http.HttpHeaders;
 import com.umc.study.repository.RatingRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -24,10 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:week6;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE")
 @AutoConfigureMockMvc
+@Import(AuthenticatedApiTestConfig.class)
 @ActiveProfiles("demo")
 @Transactional
 class Week6ApiTests {
     @Autowired MockMvc mvc;
+    @Autowired JwtUtil jwtUtil;
     @Autowired ObjectMapper mapper;
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder encoder;
@@ -41,7 +46,7 @@ class Week6ApiTests {
     }
 
     private ResultActions createRating(long memberId, String body) throws Exception {
-        return mvc.perform(post("/members/{memberId}/ratings", memberId)
+        return mvc.perform(post("/ratings").header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.createAccessToken(memberId, "test@example.com"))
                 .contentType(MediaType.APPLICATION_JSON).content(body));
     }
 
@@ -109,10 +114,10 @@ class Week6ApiTests {
                 """).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.code").value("COMMON201"))
                 .andExpect(jsonPath("$.isSuccess").value(true)).andReturn();
-        long id = mapper.readTree(created.getResponse().getContentAsString()).get("result").asLong();
+        long id = mapper.readTree(created.getResponse().getContentAsString()).get("result").get("ratingId").asLong();
         var oldUpdatedAt = jdbc.queryForObject("SELECT updated_at FROM rating WHERE rating_id = ?",
                 java.sql.Timestamp.class, id);
-        mvc.perform(patch("/members/1/ratings/{id}", id).contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(patch("/ratings/{id}", id).contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {"score":3,"comment":"수정 후기"}
                         """)).andExpect(status().isOk())
@@ -125,14 +130,14 @@ class Week6ApiTests {
         mvc.perform(get("/members/1/ratings")).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].ratingId").value(id))
                 .andExpect(jsonPath("$[0].score").value(3));
-        mvc.perform(delete("/members/1/ratings/{id}", id)).andExpect(status().isNoContent())
-                .andExpect(content().string(""));
+        mvc.perform(delete("/ratings/{id}", id)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").isEmpty());
         assertThat(ratings.existsById(id)).isFalse();
     }
 
     @Test void commentIsOptionalAndCanBeCleared() throws Exception {
         createRating(1, "{\"movieId\":90002,\"score\":1}").andExpect(status().isCreated());
-        mvc.perform(patch("/members/1/ratings/1").contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(patch("/ratings/1").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"score\":5}")).andExpect(status().isOk());
         assertThat(jdbc.queryForObject("SELECT comment FROM rating WHERE rating_id = 1", String.class)).isNull();
         createRating(1, mapper.writeValueAsString(Map.of("movieId",90003,"score",5,"comment","가".repeat(500))))
@@ -161,45 +166,45 @@ class Week6ApiTests {
                 "{\"movieId\":90001,\"score\":\"abc\"}", "{"}) {
             failure(createRating(1, body), 400, "COMMON4002");
         }
-        failure(mvc.perform(patch("/members/1/ratings/1").contentType(MediaType.APPLICATION_JSON)
+        failure(mvc.perform(patch("/ratings/1").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"score\":1.5}")), 400, "COMMON4002");
     }
 
     @Test void updateRejectsMissingOrInvalidScoreAndLongComment() throws Exception {
         for (String body : new String[]{"{}", "{\"score\":0}", "{\"score\":6}"}) {
-            failure(mvc.perform(patch("/members/1/ratings/1").contentType(MediaType.APPLICATION_JSON)
+            failure(mvc.perform(patch("/ratings/1").contentType(MediaType.APPLICATION_JSON)
                     .content(body)), 400, "COMMON4001");
         }
-        failure(mvc.perform(patch("/members/1/ratings/1").contentType(MediaType.APPLICATION_JSON)
+        failure(mvc.perform(patch("/ratings/1").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(Map.of("score",3,"comment","가".repeat(501))))),
                 400, "COMMON4001");
         assertThat(jdbc.queryForObject("SELECT score FROM rating WHERE rating_id = 1", Integer.class)).isEqualTo(5);
     }
 
     @Test void duplicateRatingReturns409AndLeavesOneRow() throws Exception {
-        failure(createRating(1, "{\"movieId\":550,\"score\":3}"), 409, "RATING4091");
+        failure(createRating(1, "{\"movieId\":550,\"score\":3}"), 409, "RATING409_1");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM rating WHERE member_id=1 AND movie_id=550", Long.class)).isEqualTo(1);
     }
 
     @Test void anotherMemberCannotModifyOrDeleteRating() throws Exception {
-        failure(mvc.perform(patch("/members/2/ratings/1").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"score\":1}")), 403, "RATING4031");
-        failure(mvc.perform(delete("/members/2/ratings/1")), 403, "RATING4031");
+        failure(mvc.perform(patch("/ratings/1").header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.createAccessToken(2L, "other@example.com")).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"score\":1}")), 403, "RATING403_1");
+        failure(mvc.perform(delete("/ratings/1").header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.createAccessToken(2L, "other@example.com"))), 403, "RATING403_1");
         assertThat(ratings.existsById(1L)).isTrue();
         assertThat(jdbc.queryForObject("SELECT score FROM rating WHERE rating_id=1", Integer.class)).isEqualTo(5);
     }
 
     @Test void missingRatingOrMemberReturns404() throws Exception {
-        failure(createRating(999, "{\"movieId\":1,\"score\":3}"), 404, "MEMBER4041");
-        failure(mvc.perform(patch("/members/1/ratings/999").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"score\":3}")), 404, "RATING4041");
-        failure(mvc.perform(delete("/members/1/ratings/999")), 404, "RATING4041");
-        failure(mvc.perform(delete("/members/999/ratings/1")), 404, "MEMBER4041");
+        failure(createRating(999, "{\"movieId\":1,\"score\":3}"), 404, "MEMBER404_1");
+        failure(mvc.perform(patch("/ratings/999").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"score\":3}")), 404, "RATING404_1");
+        failure(mvc.perform(delete("/ratings/999")), 404, "RATING404_1");
+        failure(mvc.perform(delete("/ratings/999")), 404, "RATING404_1");
     }
 
     @Test void invalidPathVariableReturnsConsistent400() throws Exception {
-        failure(createRating(-1, "{\"movieId\":1,\"score\":3}"), 404, "MEMBER4041");
-        failure(mvc.perform(delete("/members/1/ratings/abc")), 400, "COMMON4002");
+        failure(createRating(-1, "{\"movieId\":1,\"score\":3}"), 404, "MEMBER404_1");
+        failure(mvc.perform(delete("/ratings/abc")), 400, "COMMON4002");
     }
 
     @Test void databaseUniquenessStillRejectsSignupWhenPrecheckMissesDuplicate() throws Exception {
@@ -216,7 +221,7 @@ class Week6ApiTests {
 
     @Test void browserPreflightsAllowWriteMethodsAndJson() throws Exception {
         for (String method : new String[]{"POST", "PATCH", "DELETE"}) {
-            mvc.perform(options("/members/1/ratings/1")
+            mvc.perform(options("/ratings/1")
                     .header("Origin", "http://localhost:5173")
                     .header("Access-Control-Request-Method", method)
                     .header("Access-Control-Request-Headers", "content-type"))

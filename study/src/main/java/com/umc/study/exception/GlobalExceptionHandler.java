@@ -1,6 +1,7 @@
 package com.umc.study.exception;
 
 import com.umc.study.controller.MemberController;
+import com.umc.study.controller.AuthController;
 import com.umc.study.controller.RatingController;
 import com.umc.study.dto.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,15 +14,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.ResponseStatusException;
 import java.util.stream.Collectors;
 
-// 기존 도서 API의 ProblemDetail 계약은 유지하고 영화 회원/평점 API에 적용합니다.
-@RestControllerAdvice(assignableTypes = {MemberController.class, RatingController.class})
+// 회원/평점/인증 API에 공통 응답 형식을 적용합니다.
+@RestControllerAdvice(assignableTypes = {MemberController.class, RatingController.class, AuthController.class})
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiResponse<Void>> handleApi(ApiException exception) {
-        return ResponseEntity.status(exception.getStatus())
-                .body(ApiResponse.failure(exception.getCode(), exception.getMessage()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getFieldErrors().stream()

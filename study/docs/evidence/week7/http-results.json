@@ -1,0 +1,430 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "verifiedAt": "2026-11-11T10:49:00.673Z",
+  "method": "Node.js fetch: 실제 로컬 HTTP 호출 (Postman UI 캡처 아님)",
+  "claims": {
+    "sub": "5",
+    "email": "a+1794394139321@umc.com",
+    "iat": 1794394140,
+    "exp": 1794397740
+  },
+  "records": [
+    {
+      "step": "1-A 회원가입",
+      "at": "2026-11-11T10:48:59.682Z",
+      "method": "POST",
+      "path": "/members",
+      "request": {
+        "email": "a+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]",
+        "nickname": "A394139321"
+      },
+      "authorization": null,
+      "status": 201,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON201",
+        "message": "회원가입에 성공했습니다.",
+        "result": {
+          "memberId": 5,
+          "email": "a+1794394139321@umc.com",
+          "nickname": "A394139321"
+        }
+      }
+    },
+    {
+      "step": "1-B 회원가입",
+      "at": "2026-11-11T10:48:59.865Z",
+      "method": "POST",
+      "path": "/members",
+      "request": {
+        "email": "b+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]",
+        "nickname": "B394139321"
+      },
+      "authorization": null,
+      "status": 201,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON201",
+        "message": "회원가입에 성공했습니다.",
+        "result": {
+          "memberId": 6,
+          "email": "b+1794394139321@umc.com",
+          "nickname": "B394139321"
+        }
+      }
+    },
+    {
+      "step": "2-A 로그인",
+      "at": "2026-11-11T10:49:00.056Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "request": {
+        "email": "a+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]"
+      },
+      "authorization": null,
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "로그인에 성공했습니다.",
+        "result": {
+          "nickname": "A394139321",
+          "accessToken": "[실습 토큰 생략]"
+        }
+      }
+    },
+    {
+      "step": "2-B 로그인",
+      "at": "2026-11-11T10:49:00.228Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "request": {
+        "email": "b+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]"
+      },
+      "authorization": null,
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "로그인에 성공했습니다.",
+        "result": {
+          "nickname": "B394139321",
+          "accessToken": "[실습 토큰 생략]"
+        }
+      }
+    },
+    {
+      "step": "3 본인 평점 등록",
+      "at": "2026-11-11T10:49:00.257Z",
+      "method": "POST",
+      "path": "/ratings",
+      "request": {
+        "movieId": 99007,
+        "score": 5,
+        "comment": "7주차 미션 등록"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 201,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON201",
+        "message": "평점 등록에 성공했습니다.",
+        "result": {
+          "ratingId": 5,
+          "movieId": 99007,
+          "score": 5,
+          "comment": "7주차 미션 등록",
+          "createdAt": "2026-11-11T19:49:00.246718",
+          "updatedAt": "2026-11-11T19:49:00.246718"
+        }
+      }
+    },
+    {
+      "step": "4 중복 등록",
+      "at": "2026-11-11T10:49:00.274Z",
+      "method": "POST",
+      "path": "/ratings",
+      "request": {
+        "movieId": 99007,
+        "score": 5,
+        "comment": "7주차 미션 등록"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 409,
+      "response": {
+        "isSuccess": false,
+        "code": "RATING409_1",
+        "message": "이미 이 영화에 평점을 남기셨습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "5 본인 수정",
+      "at": "2026-11-11T10:49:00.296Z",
+      "method": "PATCH",
+      "path": "/ratings/5",
+      "request": {
+        "score": 3,
+        "comment": "본인 수정"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "평점 수정에 성공했습니다.",
+        "result": {
+          "ratingId": 5,
+          "movieId": 99007,
+          "score": 3,
+          "comment": "본인 수정",
+          "createdAt": "2026-11-11T19:49:00.246718",
+          "updatedAt": "2026-11-11T19:49:00.2885654"
+        }
+      }
+    },
+    {
+      "step": "6 남의 평점 수정",
+      "at": "2026-11-11T10:49:00.312Z",
+      "method": "PATCH",
+      "path": "/ratings/5",
+      "request": {
+        "score": 1
+      },
+      "authorization": "Bearer [생략]",
+      "status": 403,
+      "response": {
+        "isSuccess": false,
+        "code": "RATING403_1",
+        "message": "본인이 작성한 평점만 수정하거나 삭제할 수 있습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "7 토큰 없이 수정",
+      "at": "2026-11-11T10:49:00.323Z",
+      "method": "PATCH",
+      "path": "/ratings/5",
+      "request": {
+        "score": 1
+      },
+      "authorization": null,
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_2",
+        "message": "로그인이 필요한 요청입니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "8 없는 평점 삭제",
+      "at": "2026-11-11T10:49:00.339Z",
+      "method": "DELETE",
+      "path": "/ratings/99999",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 404,
+      "response": {
+        "isSuccess": false,
+        "code": "RATING404_1",
+        "message": "해당 평점을 찾을 수 없습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "9 본인 삭제",
+      "at": "2026-11-11T10:49:00.355Z",
+      "method": "DELETE",
+      "path": "/ratings/5",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "평점을 삭제했습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 삭제 여부 확인",
+      "at": "2026-11-11T10:49:00.367Z",
+      "method": "DELETE",
+      "path": "/ratings/5",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 404,
+      "response": {
+        "isSuccess": false,
+        "code": "RATING404_1",
+        "message": "해당 평점을 찾을 수 없습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 내 정보: 토큰 없음",
+      "at": "2026-11-11T10:49:00.374Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": null,
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_2",
+        "message": "로그인이 필요한 요청입니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 내 정보: 정상 토큰",
+      "at": "2026-11-11T10:49:00.385Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "회원 정보를 조회했습니다.",
+        "result": {
+          "email": "a+1794394139321@umc.com",
+          "nickname": "A394139321",
+          "createdAt": "2026-11-11T19:48:59.655019"
+        }
+      }
+    },
+    {
+      "step": "추가 payload 한 글자 변조",
+      "at": "2026-11-11T10:49:00.394Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_3",
+        "message": "유효하지 않은 토큰입니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 닉네임 변경",
+      "at": "2026-11-11T10:49:00.420Z",
+      "method": "PATCH",
+      "path": "/members/me",
+      "request": {
+        "nickname": "변경94139321"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "회원 정보를 수정했습니다.",
+        "result": {
+          "email": "a+1794394139321@umc.com",
+          "nickname": "변경94139321",
+          "createdAt": "2026-11-11T19:48:59.655019"
+        }
+      }
+    },
+    {
+      "step": "추가 동일 닉네임 유지",
+      "at": "2026-11-11T10:49:00.440Z",
+      "method": "PATCH",
+      "path": "/members/me",
+      "request": {
+        "nickname": "변경94139321"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "회원 정보를 수정했습니다.",
+        "result": {
+          "email": "a+1794394139321@umc.com",
+          "nickname": "변경94139321",
+          "createdAt": "2026-11-11T19:48:59.655019"
+        }
+      }
+    },
+    {
+      "step": "추가 타인 닉네임 중복",
+      "at": "2026-11-11T10:49:00.455Z",
+      "method": "PATCH",
+      "path": "/members/me",
+      "request": {
+        "nickname": "B394139321"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 409,
+      "response": {
+        "isSuccess": false,
+        "code": "MEMBER409_1",
+        "message": "이미 사용 중인 닉네임입니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 닉네임 검증",
+      "at": "2026-11-11T10:49:00.470Z",
+      "method": "PATCH",
+      "path": "/members/me",
+      "request": {
+        "nickname": "가"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 400,
+      "response": {
+        "isSuccess": false,
+        "code": "COMMON4001",
+        "message": "nickname: 닉네임은 2자 이상 12자 이하여야 합니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 없는 이메일",
+      "at": "2026-11-11T10:49:00.485Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "request": {
+        "email": "unknown+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]"
+      },
+      "authorization": null,
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_1",
+        "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 틀린 비밀번호",
+      "at": "2026-11-11T10:49:00.658Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "request": {
+        "email": "a+1794394139321@umc.com",
+        "password": "[실습 비밀번호 생략]"
+      },
+      "authorization": null,
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_1",
+        "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
+        "result": null
+      }
+    },
+    {
+      "step": "추가 이전 평점 등록 경로 폐기",
+      "at": "2026-11-11T10:49:00.669Z",
+      "method": "POST",
+      "path": "/members/5/ratings",
+      "request": {
+        "movieId": 99007,
+        "score": 5,
+        "comment": "7주차 미션 등록"
+      },
+      "authorization": "Bearer [생략]",
+      "status": 405,
+      "response": {
+        "timestamp": "2026-11-11T10:49:00.666Z",
+        "status": 405,
+        "error": "Method Not Allowed",
+        "path": "/members/5/ratings"
+      }
+    }
+  ]
+}

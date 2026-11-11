@@ -1,0 +1,106 @@
+{
+  "baseUrl": "http://localhost:8081",
+  "verifiedAt": "2026-11-11T10:51:23.570Z",
+  "method": "Node.js fetch: 실제 로컬 HTTP 호출 (Postman UI 캡처 아님)",
+  "claims": {
+    "sub": "3",
+    "email": "a+1794394219187@umc.com",
+    "iat": 1794394222,
+    "exp": 1794394282
+  },
+  "records": [
+    {
+      "step": "1-A 회원가입",
+      "at": "2026-11-11T10:50:22.558Z",
+      "method": "POST",
+      "path": "/members",
+      "request": {
+        "email": "a+1794394219187@umc.com",
+        "password": "[실습 비밀번호 생략]",
+        "nickname": "A394219187"
+      },
+      "authorization": null,
+      "status": 201,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON201",
+        "message": "회원가입에 성공했습니다.",
+        "result": {
+          "memberId": 3,
+          "email": "a+1794394219187@umc.com",
+          "nickname": "A394219187"
+        }
+      }
+    },
+    {
+      "step": "2-A 로그인",
+      "at": "2026-11-11T10:50:22.956Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "request": {
+        "email": "a+1794394219187@umc.com",
+        "password": "[실습 비밀번호 생략]"
+      },
+      "authorization": null,
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "로그인에 성공했습니다.",
+        "result": {
+          "nickname": "A394219187",
+          "accessToken": "[실습 토큰 생략]"
+        }
+      }
+    },
+    {
+      "step": "만료 전",
+      "at": "2026-11-11T10:50:23.189Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 200,
+      "response": {
+        "isSuccess": true,
+        "code": "COMMON200",
+        "message": "회원 정보를 조회했습니다.",
+        "result": {
+          "email": "a+1794394219187@umc.com",
+          "nickname": "A394219187",
+          "createdAt": "2026-11-11T19:50:22.418535"
+        }
+      }
+    },
+    {
+      "step": "만료 후",
+      "at": "2026-11-11T10:51:23.550Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": "Bearer [생략]",
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_4",
+        "message": "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        "result": null
+      }
+    },
+    {
+      "step": "토큰 없음과 비교",
+      "at": "2026-11-11T10:51:23.564Z",
+      "method": "GET",
+      "path": "/members/me",
+      "request": null,
+      "authorization": null,
+      "status": 401,
+      "response": {
+        "isSuccess": false,
+        "code": "AUTH401_2",
+        "message": "로그인이 필요한 요청입니다.",
+        "result": null
+      }
+    }
+  ]
+}

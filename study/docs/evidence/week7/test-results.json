@@ -1,0 +1,49 @@
+{
+  "source": "Gradle JUnit XML reports",
+  "verifiedAt": "2026-11-11T10:47:54Z",
+  "total": 54,
+  "suites": [
+    {
+      "name": "com.umc.study.AuthApiTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.AuthInterceptorTests",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.BookApiTests",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.JwtUtilTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.StudyApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.Week5ApiTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.umc.study.Week6ApiTests",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0
+    }
+  ]
+}

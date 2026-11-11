@@ -1,6 +1,8 @@
 package com.umc.study.service;
 
 import com.umc.study.dto.MemberResponse;
+import com.umc.study.dto.MemberInfoResponse;
+import com.umc.study.dto.MemberUpdateRequest;
 import com.umc.study.dto.SignUpRequest;
 import com.umc.study.entity.Member;
 import com.umc.study.exception.ApiException;
@@ -17,6 +19,27 @@ import java.nio.charset.StandardCharsets;
 public class MemberService {
     private final MemberRepository members;
     private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public MemberInfoResponse updateMyInfo(Long memberId, MemberUpdateRequest request) {
+        Member member = members.findById(memberId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "MEMBER404_1",
+                        "해당 회원을 찾을 수 없습니다."));
+        if (members.existsByNicknameAndMemberIdNot(request.nickname(), memberId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "MEMBER409_1", "이미 사용 중인 닉네임입니다.");
+        }
+        member.updateNickname(request.nickname());
+        members.flush();
+        return MemberInfoResponse.from(member);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberInfoResponse getMyInfo(Long memberId) {
+        Member member = members.findById(memberId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "MEMBER404_1",
+                        "해당 회원을 찾을 수 없습니다."));
+        return MemberInfoResponse.from(member);
+    }
 
     @Transactional
     public MemberResponse signUp(SignUpRequest request) {
